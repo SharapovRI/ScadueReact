@@ -1,0 +1,14 @@
+.main_page_container {
+    display: flex;
+    flex-flow: row;
+}
+
+.map_block {
+    width: 70%;
+    height: 100vh;
+}
+
+.aside_panel {
+    width: 30%;
+    height: 100%;
+}
