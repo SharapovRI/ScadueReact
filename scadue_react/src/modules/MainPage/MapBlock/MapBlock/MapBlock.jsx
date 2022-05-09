@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { MapContainer, Polygon, TileLayer, Tooltip } from 'react-leaflet';
 import './MapBlock.scss';
 
-const MapBlock = ({ data }) => {
+const MapBlock = ({ data, setActiveInitName, parentCenter, pushCenter, goBack }) => {
     const [centerCoord, setCenterCoord] = useState([51.505, -0.09]);
     const [polygons, setPolygons] = useState(null);
     //const [markers, setMarkers] = useState(null);
@@ -17,25 +17,36 @@ const MapBlock = ({ data }) => {
     }, [centerCoord])
 
     useEffect(() => {
+        if (parentCenter)
+        {
+            console.log("center");
+            setCenterCoord(parentCenter);
+        }
+    },[parentCenter]);
+
+    useEffect(() => {
         if (Array.isArray(data)) {
             data.sort((a, b) => parseFloat(a.rectangleArea) < parseFloat(b.rectangleArea));
-            console.log(data);
 
             let coords = {
                 coordinates: [],
+                center: [],
+                names: [],
             };
 
             data.forEach(element => {
                 const polygon = JSON.parse('[' + element?.unitCoordinates + ']');
-                console.log(polygon);
                 if (element?.unitCoordinates.startsWith("[[[")) {
                     coords.coordinates.push(polygon[0][0].map((item) => [item[1], item[0]]));
+                    coords.center.push([element?.centerLatitude, element?.centerLongitude]);
+                    coords.names.push(element?.name);
                 }
                 else {
                     coords.coordinates.push(polygon[0].map((item) => [item[1], item[0]]));
+                    coords.center.push([element?.centerLatitude, element?.centerLongitude]);
+                    coords.names.push(element?.name);
                 }
             });
-            console.log(coords.coordinates);
 
             let poly = coords.coordinates.map((item, index) => {
                 return (
@@ -49,6 +60,12 @@ const MapBlock = ({ data }) => {
                             color: 'white',
                         }}
                         positions={item}
+                        eventHandlers={{
+                            dblclick: (e) => {
+                                pushCenter(coords.center[index]);
+                                setActiveInitName(coords.names[index])
+                            },
+                        }}
                     >
                         <Tooltip>{index} + pppppppppppppppppp</Tooltip>
                     </Polygon>
@@ -70,7 +87,7 @@ const MapBlock = ({ data }) => {
                     color: 'white',
                 }}
                 fillRule="evenodd"
-                positions={dataCoords}
+                positions={dataCoords}                
             />
             setPolygons(poly);
         }
@@ -88,7 +105,7 @@ const MapBlock = ({ data }) => {
                 {/* <CircleMarker center={[51.505, -0.09]} pathOptions={{ fillColor: 'blue' }} radius={5} /> */}
 
             </MapContainer>
-            <button onClick={() => console.log(data)}>QQQQQQQQQQQQ</button>
+            <button onClick={() => goBack()}>Go back</button>
         </>
     )
 }
