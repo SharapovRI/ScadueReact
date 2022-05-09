@@ -4,11 +4,23 @@
 }
 
 .map_block {
-    width: 70%;
+    width: 60%;
     height: 100vh;
 }
 
 .aside_panel {
-    width: 30%;
+    width: 40%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.childs_info_table {
+    height: 50%;
+    width: 100%;
+}
+
+.selected_unit_diagram {
+    height: 50%;
+    width: 100%;
 }
