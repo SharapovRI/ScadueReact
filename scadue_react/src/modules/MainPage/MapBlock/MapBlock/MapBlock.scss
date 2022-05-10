@@ -1,0 +1,15 @@
+.map_back_button {
+    position: absolute;
+    top: 16px;
+    right: 8px;
+    z-index: 1000;
+    padding: 8px;
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 3px;
+
+    &:hover {
+        background-color: rgb(180, 192, 192);
+        cursor: pointer;
+    }
+}

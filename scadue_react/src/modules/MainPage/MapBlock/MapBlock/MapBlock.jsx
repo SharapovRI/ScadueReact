@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { MapContainer, Polygon, TileLayer, Tooltip } from 'react-leaflet';
 import './MapBlock.scss';
 
-const MapBlock = ({ data, setActiveInitName, parentCenter, pushCenter, goBack }) => {
+const MapBlock = ({ data, setActiveInitName, parentCenter, pushCenter, goBack, setClicked }) => {
     const [centerCoord, setCenterCoord] = useState([51.505, -0.09]);
     const [polygons, setPolygons] = useState(null);
     //const [markers, setMarkers] = useState(null);
@@ -41,33 +41,38 @@ const MapBlock = ({ data, setActiveInitName, parentCenter, pushCenter, goBack })
                     coords.center.push([element?.centerLatitude, element?.centerLongitude]);
                     coords.names.push(element?.name);
                 }
-                else {
+                else if (Array.isArray(polygon[0][0])) {
                     coords.coordinates.push(polygon[0].map((item) => [item[1], item[0]]));
                     coords.center.push([element?.centerLatitude, element?.centerLongitude]);
                     coords.names.push(element?.name);
                 }
             });
-
+            
+            console.log(coords);
             let poly = coords.coordinates.map((item, index) => {
                 return (
                     <Polygon
+                        key={index}
                         pathOptions={{
-                            fillColor: '#FD8D3C',
-                            fillOpacity: 0.7,
+                            fillColor: '#11ed11',
+                            fillOpacity: 0.5,
                             weight: 2,
                             opacity: 1,
-                            dashArray: 3,
-                            color: 'white',
+                            dashArray: 1,
+                            color: '#0757a3',
                         }}
                         positions={item}
                         eventHandlers={{
                             dblclick: (e) => {
                                 pushCenter(coords.center[index]);
-                                setActiveInitName(coords.names[index])
+                                setActiveInitName(coords.names[index]);
+                            },
+                            click: (e) => {
+                                setClicked(coords.names[index]);
                             },
                         }}
                     >
-                        <Tooltip>{index} + pppppppppppppppppp</Tooltip>
+                        <Tooltip>{coords.names[index]}</Tooltip>
                     </Polygon>
                 )
             });
@@ -105,7 +110,7 @@ const MapBlock = ({ data, setActiveInitName, parentCenter, pushCenter, goBack })
                 {/* <CircleMarker center={[51.505, -0.09]} pathOptions={{ fillColor: 'blue' }} radius={5} /> */}
 
             </MapContainer>
-            <button onClick={() => goBack()}>Go back</button>
+            <button className='map_back_button' onClick={() => goBack()}>Go back</button>
         </>
     )
 }
