@@ -31,7 +31,7 @@ const ChildsInfoTable = ({ data }) => {
                 ssss.map((item, index) => {
                     console.log(item);
                     item.unitName = data[index].name;
-                    item.population = data[index].population;
+                    item.population = data[index].population > 0 ? data[index].population : 'No info';
                     const entertainmentInfo = item?.buildings?.find(proper => proper.class === "Entertainment")?.count ?? 0;
                     const сommercialInfo = item?.buildings?.find(proper => proper.class === "Commercial")?.count ?? 0;
                     const educationtInfo = item?.buildings?.find(proper => proper.class === "Education")?.count ?? 0;
@@ -54,8 +54,7 @@ const ChildsInfoTable = ({ data }) => {
 
     return (
         <>
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 600 }} size="small" aria-label="simple table">
+                <Table sx={{ minWidth: 600, overflowX: "hidden" }} size="small" aria-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell>Unit</TableCell>
@@ -69,9 +68,11 @@ const ChildsInfoTable = ({ data }) => {
                     {isLoading
                         ?
                         (
-                            <Box sx={{ display: 'flex' }}>
-                                <CircularProgress />
-                            </Box>
+                            <div className='cit_circular_progress'>
+                                <Box sx={{ display: 'flex' }}>
+                                    <CircularProgress />
+                                </Box>
+                            </div>
                         )
                         :
                         (
@@ -93,7 +94,6 @@ const ChildsInfoTable = ({ data }) => {
                             </TableBody>
                         )}
                 </Table>
-            </TableContainer>
         </>
     )
 }

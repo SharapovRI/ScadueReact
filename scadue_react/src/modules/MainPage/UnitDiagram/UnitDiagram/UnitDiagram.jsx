@@ -32,13 +32,13 @@ const UnitDiagram = ({ unitName }) => {
     }, [unitName]);
 
     useEffect(() => {
-        if (unitInfo){
+        if (unitInfo?.buildings){
             const data = [];
             console.log(unitInfo);
             unitInfo.buildings.map((item) => {
                 const dataEd = {
-                    value: item.count,
-                    name: item.class,
+                    value: item?.count,
+                    name: item?.class,
                 }
                 data.push(dataEd);
             })
