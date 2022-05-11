@@ -5,6 +5,7 @@ import getChildUnits from '../../../api/api_requests/getChildUnits';
 import ChildsInfoTable from '../ChildsInfoTable/ChildsInfoTable/ChildsInfoTable';
 import './MainPage.scss';
 import getUnitInfo from '../../../api/api_requests/getUnitInfo';
+import UnitDiagram from '../UnitDiagram/UnitDiagram/UnitDiagram';
 
 const MainPage = () => {
     const [searchedCountry, setSearchedCountry] = useState("Беларусь");
@@ -16,6 +17,8 @@ const MainPage = () => {
 
     const [parentCenter, setParentCenter] = useState([]);
     const [lastParentCenter, setLastParentCenter] = useState();
+
+    const[clickedUnit, setClickedUnit] = useState();
 
     useEffect(() => {
         doRequestCountry();
@@ -59,21 +62,22 @@ const MainPage = () => {
         { activeUnitName && fetchChilds() }
     }
 
-    useEffect(() => {
-        if (lastResponse?.length > 1000) {
-            const buildings = [];
-            lastResponse.map(async (item, index) => {
-                const query = {
-                    adminLevel: item?.adminLevel,
-                    unitName: item?.name,
-                }
-                const data = await getUnitInfo(item?.adminLevel, item?.name);
-                data.unitName = item?.name;
-                buildings.push(data);
-            })
-            setUnitBuildings(buildings);
-        }
-    }, [lastResponse]);
+    // useEffect(() => {
+    //     if (lastResponse?.length > 1) {
+    //         const buildings = [];
+    //         lastResponse.map((item, index) => {
+    //             const query = {
+    //                 adminLevel: item?.adminLevel,
+    //                 unitName: item?.name,
+    //             }
+    //             const data = getUnitInfo(item?.adminLevel, item?.name);
+    //             data.unitName = item?.name;
+    //             data.population = item?.population;
+    //             buildings.push(data);
+    //         });
+    //         setUnitBuildings(buildings);
+    //     }
+    // }, [lastResponse]);
 
 
     function pushCenter(coordArray) {
@@ -82,7 +86,7 @@ const MainPage = () => {
     }
 
     function goBack() {
-        console.log(responseStack.length);
+        console.log(responseStack);
         if (responseStack.length > 2) {
             responseStack.pop();
             setResponseStack(responseStack);
@@ -98,15 +102,20 @@ const MainPage = () => {
     return (
         <div className="main_page_container">
             <div className="map_block">
-                <MapBlock data={lastResponse} setActiveInitName={setActiveInitName} parentCenter={lastParentCenter} pushCenter={pushCenter} goBack={goBack} />
+                <MapBlock data={lastResponse} 
+                    setActiveInitName={setActiveInitName} 
+                    parentCenter={lastParentCenter} 
+                    pushCenter={pushCenter} 
+                    goBack={goBack} 
+                    setClicked={setClickedUnit}
+                />
             </div>
             <div className="aside_panel">
-                <button onClick={() => console.log(parentCenter)}>QQQQQQQQQQQQ</button>
                 <div className="childs_info_table">
-
+                    <ChildsInfoTable data={lastResponse}/>
                 </div>
                 <div className="selected_unit_diagram">
-                    <ChildsInfoTable />
+                    <UnitDiagram unitName={clickedUnit} />
                 </div>
             </div>
         </div>
